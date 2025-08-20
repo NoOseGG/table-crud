@@ -1,4 +1,4 @@
-export type TableItems = {
+export type TableItem = {
   id: string;
   name: string;
   date: string;
