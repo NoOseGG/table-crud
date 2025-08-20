@@ -1,10 +1,16 @@
 import { Table as AntTable, Space, type TableProps } from "antd";
+import dayjs from "dayjs";
 
 import { useGetTableData } from "../hooks/use-get-table-data";
 import type { DataType } from "../types/types";
 import styles from "./table.module.css";
 
-export const Table = () => {
+interface Props {
+  onEdit: (item: DataType) => void;
+  onDelete: (item: DataType) => void;
+}
+
+export const Table: React.FC<Props> = ({ onEdit, onDelete }) => {
   const { data: items } = useGetTableData();
 
   const columns: TableProps<DataType>["columns"] = [
@@ -12,24 +18,31 @@ export const Table = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      showSorterTooltip: { target: "full-header" },
+      sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
       title: "Date",
       dataIndex: "date",
       key: "date",
+      showSorterTooltip: { target: "full-header" },
+      sorter: (a, b) =>
+        dayjs(a.date, "DD.MM.YYYY").unix() - dayjs(b.date, "DD.MM.YYYY").unix(),
     },
     {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
+      title: "Age",
+      dataIndex: "age",
+      key: "age",
+      showSorterTooltip: { target: "full-header" },
+      sorter: (a, b) => a.age - b.age,
     },
     {
       title: "Action",
       key: "action",
-      render: () => (
+      render: (_, record) => (
         <Space size='middle'>
-          <a>Edit</a>
-          <a>Delete</a>
+          <a onClick={() => onEdit(record)}>Edit</a>
+          <a onClick={() => onDelete(record)}>Delete</a>
         </Space>
       ),
     },
@@ -37,10 +50,9 @@ export const Table = () => {
 
   const data: DataType[] = items
     ? items.map(item => ({
-        key: item.id,
-        name: item.name,
+        ...item,
         date: new Date(item.date).toLocaleDateString(),
-        price: item.price,
+        key: item.id,
       }))
     : [];
 

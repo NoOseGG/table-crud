@@ -1,13 +1,7 @@
-export type TableItem = {
-  id: string;
+export interface DataType {
+  id?: string;
+  key?: string;
   name: string;
   date: string;
-  price: number;
-};
-
-export type DataType = {
-  key: string;
-  name: string;
-  date: string;
-  price: number;
-};
+  age: number;
+}
